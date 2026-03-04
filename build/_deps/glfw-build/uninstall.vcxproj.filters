@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Labs\Osci\build\CMakeFiles\5c1f55e95f945e413d912aa0c0e88feb\uninstall.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Labs\Osci\build\_deps\glfw-build\CMakeFiles\uninstall" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{73E39C0C-AEEE-3DAA-90AA-4F7FE6E40965}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

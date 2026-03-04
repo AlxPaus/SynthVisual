@@ -1,0 +1,14 @@
+# Target labels
+ glfw-populate
+# Source files and their labels
+C:/Labs/Osci/build/_deps/glfw-subbuild/CMakeFiles/glfw-populate
+C:/Labs/Osci/build/_deps/glfw-subbuild/CMakeFiles/ea829c26d19412e5e9c608beec09a9a2/glfw-populate.rule
+C:/Labs/Osci/build/_deps/glfw-subbuild/CMakeFiles/82850775a1141975293dcaf3be2a1e89/glfw-populate-complete.rule
+C:/Labs/Osci/build/_deps/glfw-subbuild/CMakeFiles/e5051f618cf97c53dc55949a1349c783/glfw-populate-build.rule
+C:/Labs/Osci/build/_deps/glfw-subbuild/CMakeFiles/e5051f618cf97c53dc55949a1349c783/glfw-populate-configure.rule
+C:/Labs/Osci/build/_deps/glfw-subbuild/CMakeFiles/e5051f618cf97c53dc55949a1349c783/glfw-populate-download.rule
+C:/Labs/Osci/build/_deps/glfw-subbuild/CMakeFiles/e5051f618cf97c53dc55949a1349c783/glfw-populate-install.rule
+C:/Labs/Osci/build/_deps/glfw-subbuild/CMakeFiles/e5051f618cf97c53dc55949a1349c783/glfw-populate-mkdir.rule
+C:/Labs/Osci/build/_deps/glfw-subbuild/CMakeFiles/e5051f618cf97c53dc55949a1349c783/glfw-populate-patch.rule
+C:/Labs/Osci/build/_deps/glfw-subbuild/CMakeFiles/e5051f618cf97c53dc55949a1349c783/glfw-populate-test.rule
+C:/Labs/Osci/build/_deps/glfw-subbuild/CMakeFiles/e5051f618cf97c53dc55949a1349c783/glfw-populate-update.rule

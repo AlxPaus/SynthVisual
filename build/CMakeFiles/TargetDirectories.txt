@@ -1,0 +1,10 @@
+C:/Labs/Osci/build/CMakeFiles/PhysicsSynthVisual.dir
+C:/Labs/Osci/build/CMakeFiles/INSTALL.dir
+C:/Labs/Osci/build/CMakeFiles/ALL_BUILD.dir
+C:/Labs/Osci/build/CMakeFiles/ZERO_CHECK.dir
+C:/Labs/Osci/build/_deps/glfw-build/CMakeFiles/uninstall.dir
+C:/Labs/Osci/build/_deps/glfw-build/CMakeFiles/INSTALL.dir
+C:/Labs/Osci/build/_deps/glfw-build/CMakeFiles/ALL_BUILD.dir
+C:/Labs/Osci/build/_deps/glfw-build/src/CMakeFiles/update_mappings.dir
+C:/Labs/Osci/build/_deps/glfw-build/src/CMakeFiles/glfw.dir
+C:/Labs/Osci/build/_deps/glfw-build/src/CMakeFiles/INSTALL.dir

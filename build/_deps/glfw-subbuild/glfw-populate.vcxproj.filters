@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeFiles\e5051f618cf97c53dc55949a1349c783\glfw-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeFiles\e5051f618cf97c53dc55949a1349c783\glfw-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeFiles\e5051f618cf97c53dc55949a1349c783\glfw-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeFiles\e5051f618cf97c53dc55949a1349c783\glfw-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeFiles\e5051f618cf97c53dc55949a1349c783\glfw-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeFiles\e5051f618cf97c53dc55949a1349c783\glfw-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeFiles\e5051f618cf97c53dc55949a1349c783\glfw-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeFiles\e5051f618cf97c53dc55949a1349c783\glfw-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeFiles\82850775a1141975293dcaf3be2a1e89\glfw-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeFiles\ea829c26d19412e5e9c608beec09a9a2\glfw-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Labs\Osci\build\_deps\glfw-subbuild\CMakeFiles\glfw-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{63A91656-6E7E-33B7-9535-B370B272AE39}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

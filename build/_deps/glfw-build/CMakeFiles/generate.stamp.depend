@@ -1,0 +1,18 @@
+# CMake generation dependency list for this directory.
+C:/Labs/Osci/build/_deps/glfw-src/CMakeLists.txt
+C:/Labs/Osci/build/_deps/glfw-src/cmake_uninstall.cmake.in
+C:/Labs/Osci/build/_deps/glfw-src/src/glfw3.pc.in
+C:/Labs/Osci/build/_deps/glfw-src/src/glfw3Config.cmake.in
+C:/Labs/Osci/build/_deps/glfw-src/src/glfw_config.h.in
+C:/Program Files/CMake/share/cmake-3.30/Modules/BasicConfigVersion-SameMajorVersion.cmake.in
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeDependentOption.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CMakePackageConfigHelpers.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CheckCSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CheckIncludeFile.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/CheckLibraryExists.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/FindThreads.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/GNUInstallDirs.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/Internal/CheckSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-3.30/Modules/WriteBasicConfigVersionFile.cmake

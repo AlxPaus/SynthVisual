@@ -1,0 +1,8 @@
+C:\Labs\Osci\src\main.cpp;C:\Labs\Osci\build\PhysicsSynthVisual.dir\Debug\main.obj
+C:\Labs\Osci\src\audio_impl.c;C:\Labs\Osci\build\PhysicsSynthVisual.dir\Debug\audio_impl.obj
+C:\Labs\Osci\build\_deps\imgui-src\imgui.cpp;C:\Labs\Osci\build\PhysicsSynthVisual.dir\Debug\imgui.obj
+C:\Labs\Osci\build\_deps\imgui-src\imgui_draw.cpp;C:\Labs\Osci\build\PhysicsSynthVisual.dir\Debug\imgui_draw.obj
+C:\Labs\Osci\build\_deps\imgui-src\imgui_tables.cpp;C:\Labs\Osci\build\PhysicsSynthVisual.dir\Debug\imgui_tables.obj
+C:\Labs\Osci\build\_deps\imgui-src\imgui_widgets.cpp;C:\Labs\Osci\build\PhysicsSynthVisual.dir\Debug\imgui_widgets.obj
+C:\Labs\Osci\build\_deps\imgui-src\backends\imgui_impl_glfw.cpp;C:\Labs\Osci\build\PhysicsSynthVisual.dir\Debug\imgui_impl_glfw.obj
+C:\Labs\Osci\build\_deps\imgui-src\backends\imgui_impl_opengl3.cpp;C:\Labs\Osci\build\PhysicsSynthVisual.dir\Debug\imgui_impl_opengl3.obj

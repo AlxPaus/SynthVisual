@@ -1,0 +1,14 @@
+# Target labels
+ imgui-populate
+# Source files and their labels
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/imgui-populate
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/a0abfddc99123c985dc94e3ea3add316/imgui-populate.rule
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/23bf03b185e42dbe91e9ffc1105141a1/imgui-populate-complete.rule
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/9be04c8829f69d8f80ea1d83838eddd4/imgui-populate-build.rule
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/9be04c8829f69d8f80ea1d83838eddd4/imgui-populate-configure.rule
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/9be04c8829f69d8f80ea1d83838eddd4/imgui-populate-download.rule
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/9be04c8829f69d8f80ea1d83838eddd4/imgui-populate-install.rule
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/9be04c8829f69d8f80ea1d83838eddd4/imgui-populate-mkdir.rule
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/9be04c8829f69d8f80ea1d83838eddd4/imgui-populate-patch.rule
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/9be04c8829f69d8f80ea1d83838eddd4/imgui-populate-test.rule
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/9be04c8829f69d8f80ea1d83838eddd4/imgui-populate-update.rule

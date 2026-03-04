@@ -1,0 +1,3 @@
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/imgui-populate.dir
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/ALL_BUILD.dir
+C:/Labs/Osci/build/_deps/imgui-subbuild/CMakeFiles/ZERO_CHECK.dir
