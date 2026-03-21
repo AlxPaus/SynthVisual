@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
-project(PhysicsSynthVisual VERSION 0.3 LANGUAGES CXX C)
+project(PhysicsSynthVisual VERSION 0.4 LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 99)
 
-# === ОПТИМИЗАЦИЯ ПАМЯТИ КОМПИЛЯТОРА MSVC ===
 if(MSVC)
     add_compile_options(/Z7 /MP1 /bigobj /Zm500)
     add_compile_options(/wd4005 /wd4244 /wd4305)
@@ -23,12 +22,12 @@ FetchContent_MakeAvailable(glfw)
 FetchContent_Declare(imgui GIT_REPOSITORY https://github.com/ocornut/imgui GIT_TAG v1.89.9)
 FetchContent_MakeAvailable(imgui)
 
-# === ПРЯМОЕ УКАЗАНИЕ ФАЙЛОВ СБОРКИ ===
-# Никаких переменных, перечисляем жестко в лоб
+# === СПИСОК ФАЙЛОВ ===
 add_executable(PhysicsSynthVisual
     "src/main.cpp"
-    "src/audio_impl.c"
     "src/osc.h"
+    "src/wasapi_audio.h"  # Добавлен наш кастомный драйвер
+    # src/audio_impl.c    # Удалено: мы больше не используем miniaudio
     "${imgui_SOURCE_DIR}/imgui.cpp"
     "${imgui_SOURCE_DIR}/imgui_draw.cpp"
     "${imgui_SOURCE_DIR}/imgui_tables.cpp"
@@ -37,7 +36,6 @@ add_executable(PhysicsSynthVisual
     "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
 )
 
-# === НАСТРОЙКА ПУТЕЙ И ЛИНКОВКА ===
 target_include_directories(PhysicsSynthVisual PRIVATE 
     "src" 
     "${imgui_SOURCE_DIR}" 
@@ -47,5 +45,7 @@ target_include_directories(PhysicsSynthVisual PRIVATE
 target_link_libraries(PhysicsSynthVisual PRIVATE glfw)
 
 if(WIN32)
-    target_link_libraries(PhysicsSynthVisual PRIVATE opengl32)
+    # Добавлены системные библиотеки Windows: 
+    # winmm (MIDI), comdlg32 (Диалоги сохранения), ole32 (WASAPI COM)
+    target_link_libraries(PhysicsSynthVisual PRIVATE opengl32 winmm comdlg32 ole32)
 endif()
