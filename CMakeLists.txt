@@ -22,11 +22,7 @@ FetchContent_MakeAvailable(glfw)
 FetchContent_Declare(imgui GIT_REPOSITORY https://github.com/ocornut/imgui GIT_TAG v1.89.9)
 FetchContent_MakeAvailable(imgui)
 
-add_executable(PhysicsSynthVisual
-    "src/main.cpp"
-    "src/audio_engine.cpp"
-    "src/presets.cpp"
-    # src/audio_impl.c  -- unused miniaudio stub
+add_library(imgui_lib STATIC
     "${imgui_SOURCE_DIR}/imgui.cpp"
     "${imgui_SOURCE_DIR}/imgui_draw.cpp"
     "${imgui_SOURCE_DIR}/imgui_tables.cpp"
@@ -34,17 +30,21 @@ add_executable(PhysicsSynthVisual
     "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp"
     "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
 )
-
-target_include_directories(PhysicsSynthVisual PRIVATE 
-    "src" 
-    "${imgui_SOURCE_DIR}" 
+target_include_directories(imgui_lib PUBLIC
+    "${imgui_SOURCE_DIR}"
     "${imgui_SOURCE_DIR}/backends"
 )
+target_link_libraries(imgui_lib PUBLIC glfw opengl32)
 
-target_link_libraries(PhysicsSynthVisual PRIVATE glfw)
+add_subdirectory(src/dsp)
+add_subdirectory(src/synth)
+add_subdirectory(src/audio)
+add_subdirectory(src/ui)
+
+add_executable(PhysicsSynthVisual src/main.cpp)
+target_include_directories(PhysicsSynthVisual PRIVATE src)
+target_link_libraries(PhysicsSynthVisual PRIVATE synth audio_driver ui imgui_lib)
 
 if(WIN32)
-    # Добавлены системные библиотеки Windows: 
-    # winmm (MIDI), comdlg32 (Диалоги сохранения), ole32 (WASAPI COM)
-    target_link_libraries(PhysicsSynthVisual PRIVATE opengl32 winmm comdlg32 ole32)
+    target_link_libraries(PhysicsSynthVisual PRIVATE winmm comdlg32 ole32)
 endif()

@@ -3,14 +3,12 @@
 #include <mmsystem.h>
 #include <cmath>
 #include <algorithm>
-#include "synth_globals.h"
-#include "audio_engine.h"
+#include "synth/synth_globals.h"
+#include "synth/audio_engine.h"
 
-HMIDIIN              hMidiIn        = nullptr;
-std::vector<std::string> midiPorts  = {};
+HMIDIIN              hMidiIn         = nullptr;
+std::vector<std::string> midiPorts   = {};
 int                  selectedMidiPort = -1;
-
-// === VOICE MANAGEMENT ===
 
 void UpdateOscillatorsTable() {
     for (auto& v : g_synth.voicesA)
@@ -29,8 +27,6 @@ void UpdateFilters() {
     for (auto& v : g_synth.voicesA) v.filter.enabled = g_synth.filter.enabled;
     for (auto& v : g_synth.voicesB) v.filter.enabled = g_synth.filter.enabled;
 }
-
-// === NOTE ALLOCATION ===
 
 static void TriggerVoicePool(
     std::vector<WavetableOscillator>& pool,
@@ -123,8 +119,6 @@ void NoteOff(int note) {
     }
 }
 
-// === MIDI IO ===
-
 void CALLBACK MidiInProc(HMIDIIN, UINT wMsg, DWORD_PTR, DWORD_PTR dwParam1, DWORD_PTR) {
     if (wMsg != MIM_DATA) return;
     unsigned char status   =  dwParam1        & 0xFF;
@@ -159,8 +153,6 @@ void OpenMidiPort(int portIndex) {
     }
 }
 
-// === MOD MATRIX ===
-
 float GetModSum(int targetId) {
     float sum = 0.0f;
     for (const auto& m : g_synth.modMatrix) {
@@ -190,13 +182,10 @@ float GetModAmountForUI(int targetId) {
     return 0.0f;
 }
 
-// === AUDIO RENDER ===
-
 void data_callback(float* pOut, int frameCount) {
     std::lock_guard<std::mutex> lock(audioMutex);
     std::fill(pOut, pOut + frameCount * 2, 0.0f);
 
-    // --- Update LFOs (block-rate) ---
     const float bpmMults[] = { 0.25f, 0.5f, 1.0f, 2.0f, 4.0f, 8.0f };
     for (int i = 0; i < 2; ++i) {
         g_synth.lfos[i].rateHz = (g_synth.lfoConfig[i].syncMode == 1)
@@ -205,7 +194,6 @@ void data_callback(float* pOut, int frameCount) {
         g_synth.lfos[i].advance(frameCount);
     }
 
-    // --- Block-rate mod sums for oscillators / filter ---
     float modWtA  = GetModSum(TGT_OSCA_WTPOS),  modLevA = GetModSum(TGT_OSCA_LEVEL);
     float modDetA = GetModSum(TGT_OSCA_DETUNE),  modBndA = GetModSum(TGT_OSCA_BLEND);
     float modPitA = GetModSum(TGT_OSCA_PITCH);
@@ -228,7 +216,7 @@ void data_callback(float* pOut, int frameCount) {
     float activeDetB   = clamp(g_synth.oscB.unisonDetune + modDetB, 0.0f, 1.0f);
     float activeBndB   = clamp(g_synth.oscB.unisonBlend  + modBndB, 0.0f, 1.0f);
 
-    // --- Block-rate FX mod: additive over base, base values are NOT modified ---
+    // Block-rate FX mod: additive over base, base values are NOT modified
     float activeDistDrive = clamp(g_synth.distortion.drive + GetModSum(TGT_DIST_DRIVE), 0.0f,  1.0f);
     float activeDistMix   = clamp(g_synth.distortion.mix   + GetModSum(TGT_DIST_MIX),   0.0f,  1.0f);
     float activeDelTime   = clamp(g_synth.delay.time       + GetModSum(TGT_DEL_TIME),   0.01f, 1.5f);
@@ -238,7 +226,6 @@ void data_callback(float* pOut, int frameCount) {
     float activeRevDamp   = clamp(g_synth.reverb.damping   + GetModSum(TGT_REV_DAMP),   0.0f,  1.0f);
     float activeRevMix    = clamp(g_synth.reverb.mix       + GetModSum(TGT_REV_MIX),    0.0f,  1.0f);
 
-    // --- Apply WT position and filter coefficients to all voices ---
     // Voice[0] is always updated (used for filter curve display in UI)
     g_synth.voicesA[0].setWTPos(activeWtA);
     g_synth.voicesA[0].filter.setCoefficients((FilterType)g_synth.filter.type, activeCutoff, activeRes, kSampleRate);
@@ -267,10 +254,8 @@ void data_callback(float* pOut, int frameCount) {
         ? 1.0f - std::exp(-1.0f / (kSampleRate * (g_synth.glideTime / 3.0f)))
         : 1.0f;
 
-    // --- Per-sample render loop ---
     for (int i = 0; i < frameCount; ++i) {
 
-        // Advance aux envelopes (ENV2 / ENV3)
         g_synth.auxEnvs[0].process(
             g_synth.envParams[1].attack, g_synth.envParams[1].decay,
             g_synth.envParams[1].sustain, g_synth.envParams[1].release, kSampleRate);
@@ -278,7 +263,6 @@ void data_callback(float* pOut, int frameCount) {
             g_synth.envParams[2].attack, g_synth.envParams[2].decay,
             g_synth.envParams[2].sustain, g_synth.envParams[2].release, kSampleRate);
 
-        // --- Mono-legato pitch glide ---
         if (g_synth.monoLegato && !g_synth.heldNotes.empty()) {
             g_synth.currentGlideFreq += glideAlpha * (g_synth.targetGlideFreq - g_synth.currentGlideFreq);
             g_synth.lastPolyFreq = g_synth.currentGlideFreq;
@@ -322,7 +306,6 @@ void data_callback(float* pOut, int frameCount) {
             updatePolyVoices(g_synth.voicesB, g_synth.oscB, modPitB);
         }
 
-        // --- Mix voices ---
         float mixL = 0.0f, mixR = 0.0f;
         float maxEnv = 0.0f;
 
@@ -340,7 +323,6 @@ void data_callback(float* pOut, int frameCount) {
         if (g_synth.oscA.enabled) mixVoices(g_synth.voicesA, activeLevA, gcA);
         if (g_synth.oscB.enabled) mixVoices(g_synth.voicesB, activeLevB, gcB);
 
-        // --- Sub oscillator ---
         if (g_synth.subEnabled && maxEnv > 0.001f) {
             float subF = g_synth.lastPolyFreq * std::pow(2.0f, (float)g_synth.subOctave);
             g_synth.subPhase += subF / kSampleRate;
@@ -351,7 +333,6 @@ void data_callback(float* pOut, int frameCount) {
             mixR += sub;
         }
 
-        // --- Noise ---
         if (g_synth.noise.enabled && maxEnv > 0.001f) {
             float activeNoiseLevel = clamp(g_synth.noise.level + modNoiseLevel, 0.0f, 1.0f);
             float ns = g_synth.noise.process() * activeNoiseLevel * maxEnv * 0.15f;
@@ -359,7 +340,6 @@ void data_callback(float* pOut, int frameCount) {
             mixR += ns;
         }
 
-        // --- FX chain (modulated params applied without mutating base values) ---
         if (g_synth.distortion.enabled) {
             float df = 1.0f + activeDistDrive * 10.0f;
             auto distort = [&](float x) {
@@ -399,7 +379,7 @@ void data_callback(float* pOut, int frameCount) {
         pOut[2 * i]     = mixL * masterGain;
         pOut[2 * i + 1] = mixR * masterGain;
 
-        // --- Scope: triggered on zero-crossing ---
+        // Scope: triggered on zero-crossing
         float mono = (pOut[2*i] + pOut[2*i+1]) * 0.5f;
         if (!g_synth.scopeTriggered && g_synth.lastScopeSample <= 0.0f && mono > 0.0f) {
             g_synth.scopeTriggered = true;

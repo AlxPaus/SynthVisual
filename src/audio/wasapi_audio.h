@@ -79,9 +79,9 @@ public:
     }
 
 private:
-    IMMDeviceEnumerator* pEnumerator  = nullptr;
-    IMMDevice*           pDevice      = nullptr;
-    IAudioClient*        pAudioClient = nullptr;
+    IMMDeviceEnumerator* pEnumerator   = nullptr;
+    IMMDevice*           pDevice       = nullptr;
+    IAudioClient*        pAudioClient  = nullptr;
     IAudioRenderClient*  pRenderClient = nullptr;
 
     std::thread          audioThread;

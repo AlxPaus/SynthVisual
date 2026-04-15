@@ -7,11 +7,9 @@
 #include <functional>
 #include <unordered_map>
 #include <iostream>
-#include "synth_globals.h"
-#include "audio_engine.h"
-#include "presets.h"
-
-// === FILE DIALOGS ===
+#include "synth/synth_globals.h"
+#include "synth/audio_engine.h"
+#include "synth/presets.h"
 
 std::string SaveFileDialog() {
     char filename[MAX_PATH] = "";
@@ -38,10 +36,8 @@ std::string OpenFileDialog() {
     return GetOpenFileNameA(&ofn) ? std::string(filename) : "";
 }
 
-// === DECLARATIVE PARAMETER TABLE ===
-//
-// Each entry maps a key string to save/load functions bound to the actual global.
-// The lambda references are stable because they bind to g_synth fields (global lifetime).
+// Each entry maps a key string to save/load lambdas bound to g_synth fields.
+// Lambda references are stable because g_synth has global lifetime.
 
 struct ParamEntry {
     std::string key;
@@ -142,8 +138,6 @@ static std::vector<ParamEntry> buildParamTable() {
 
     return t;
 }
-
-// === SAVE / LOAD ===
 
 void SavePreset(const std::string& filename) {
     std::ofstream out(filename);

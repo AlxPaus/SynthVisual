@@ -1,14 +1,11 @@
 #pragma once
-#include "imgui.h"
-#include <GLFW/glfw3.h>
 #include <cmath>
 #include <algorithm>
 #include <cstdio>
 #include <vector>
-#include "synth_globals.h"
-#include "audio_engine.h"
-
-// === KNOB ===
+#include "imgui.h"
+#include <GLFW/glfw3.h>
+#include "synth/audio_engine.h"
 
 inline bool DrawKnob(const char* label, float* value, float vMin, float vMax,
                      const char* format, int targetId, bool logScale = false)
@@ -77,8 +74,6 @@ inline bool DrawKnob(const char* label, float* value, float vMin, float vMax,
     return changed;
 }
 
-// === KEYBOARD MAPPING ===
-
 struct KeyMap { int key; int offset; };
 
 inline std::vector<KeyMap> pcKeys = {
@@ -93,8 +88,6 @@ inline std::vector<KeyMap> pcKeys = {
     { GLFW_KEY_I, 24 }, { GLFW_KEY_9, 25 }, { GLFW_KEY_O, 26 }, { GLFW_KEY_0, 27 },
     { GLFW_KEY_P, 28 }
 };
-
-// === PIANO KEY ===
 
 inline bool PianoKey(const char* id, bool isBlack, bool isActive, ImVec2 size) {
     ImVec4 colorNorm   = isBlack ? ImVec4(0.12f, 0.12f, 0.12f, 1.0f)
@@ -117,8 +110,6 @@ inline bool PianoKey(const char* id, bool isBlack, bool isActive, ImVec2 size) {
     return pressed;
 }
 
-// === 3D WAVETABLE VIEW ===
-
 inline void Draw3DTable(ImDrawList* drawList, ImVec2 pos, float viewW, float viewH,
                         const Wavetable3D& table, float currentWtPos, float currentLevel,
                         const std::vector<float>& activeWave, bool enabled)
@@ -130,14 +121,14 @@ inline void Draw3DTable(ImDrawList* drawList, ImVec2 pos, float viewW, float vie
         return;
     }
 
-    int   numFrames      = (int)table.frames.size();
-    float plotW          = viewW * 0.75f;
-    float plotH          = 40.0f;
-    float startX         = pos.x + (viewW - plotW) / 2.0f;
-    float startY         = pos.y + viewH - 50.0f;
-    float zTiltX         = 6.0f, zTiltY = 6.0f;
-    int   step           = 16;
-    float activeFrame    = currentWtPos * (numFrames - 1);
+    int   numFrames   = (int)table.frames.size();
+    float plotW       = viewW * 0.75f;
+    float plotH       = 40.0f;
+    float startX      = pos.x + (viewW - plotW) / 2.0f;
+    float startY      = pos.y + viewH - 50.0f;
+    float zTiltX      = 6.0f, zTiltY = 6.0f;
+    int   step        = 16;
+    float activeFrame = currentWtPos * (numFrames - 1);
 
     for (int f = numFrames - 1; f >= 0; --f) {
         float zX = f * zTiltX;

@@ -1,0 +1,10 @@
+#pragma once
+#include "ui/ui_widgets.h"
+#include "ui/top_bar.h"
+#include "ui/osc_tab.h"
+#include "ui/draw_tab.h"
+#include "ui/fx_tab.h"
+#include "ui/mod_matrix_tab.h"
+#include "ui/scope.h"
+#include "ui/piano.h"
+#include "ui/spectrum.h"
