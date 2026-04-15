@@ -22,12 +22,11 @@ FetchContent_MakeAvailable(glfw)
 FetchContent_Declare(imgui GIT_REPOSITORY https://github.com/ocornut/imgui GIT_TAG v1.89.9)
 FetchContent_MakeAvailable(imgui)
 
-# === СПИСОК ФАЙЛОВ ===
 add_executable(PhysicsSynthVisual
     "src/main.cpp"
-    "src/osc.h"
-    "src/wasapi_audio.h"  # Добавлен наш кастомный драйвер
-    # src/audio_impl.c    # Удалено: мы больше не используем miniaudio
+    "src/audio_engine.cpp"
+    "src/presets.cpp"
+    # src/audio_impl.c  -- unused miniaudio stub
     "${imgui_SOURCE_DIR}/imgui.cpp"
     "${imgui_SOURCE_DIR}/imgui_draw.cpp"
     "${imgui_SOURCE_DIR}/imgui_tables.cpp"
