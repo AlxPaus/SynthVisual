@@ -45,11 +45,12 @@ public:
 
     void setPan(float p) { pan = p; }
     float getPan() const { return pan; }
-    void setPhase(float p) { phase = p; }
+    void setPhase(float p) { phase = normalizePhase(p); }
 
     void setFrequency(float freq) {
-        frequency = freq;
-        increment = (TABLE_SIZE * frequency) / sampleRate;
+        frequency = std::max(0.0f, freq);
+        float safeSampleRate = std::max(1.0f, sampleRate);
+        increment = (TABLE_SIZE * frequency) / safeSampleRate;
     }
 
     void noteOn(int midiNote) {
@@ -65,16 +66,25 @@ public:
 
     float getSample() {
         if (!isActive() || !currentTable) return 0.0f;
-        int idx0 = (int)phase;
+        int idx0 = (int)std::floor(phase);
+        if (idx0 < 0) idx0 = 0;
+        if (idx0 >= TABLE_SIZE) idx0 = TABLE_SIZE - 1;
         int idx1 = (idx0 + 1) % TABLE_SIZE;
         float frac = phase - (float)idx0;
         float raw = interpolatedWave[idx0] + frac * (interpolatedWave[idx1] - interpolatedWave[idx0]);
         phase += increment;
+        while (phase < 0.0f) phase += TABLE_SIZE;
         while (phase >= TABLE_SIZE) phase -= TABLE_SIZE;
         return filter.process(raw * env.process());
     }
 
 private:
+    static float normalizePhase(float p) {
+        while (p < 0.0f) p += TABLE_SIZE;
+        while (p >= TABLE_SIZE) p -= TABLE_SIZE;
+        return p;
+    }
+
     std::vector<float> interpolatedWave;
     const Wavetable3D* currentTable;
     float sampleRate, phase, increment, frequency;
