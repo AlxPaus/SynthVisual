@@ -47,6 +47,7 @@ static void TriggerVoicePool(
                 (baseNote + cfg.octave * 12 + cfg.semi - 69.0f + detuneSemitones) / 12.0f);
 
             v.setFrequency(freq);
+            v.setDetuneSemitones(detuneSemitones);
             v.setPan(spread * cfg.unisonBlend);
 
             if (!legatoSlide) {
@@ -299,8 +300,9 @@ void data_callback(float* pOut, int frameCount) {
                 if (!cfg.enabled) return;
                 for (auto& v : voices) {
                     if (!v.isActive()) continue;
+                    float detuneSemitones = v.getDetuneSemitones();
                     float freq = 440.0f * std::pow(2.0f,
-                        (v.getNote() + cfg.octave * 12 + cfg.semi + pitchMod * 24.0f - 69.0f) / 12.0f);
+                        (v.getNote() + cfg.octave * 12 + cfg.semi + pitchMod * 24.0f - 69.0f + detuneSemitones) / 12.0f);
                     v.setFrequency(freq);
                 }
             };
