@@ -7,6 +7,7 @@
 #include <functional>
 #include <unordered_map>
 #include <iostream>
+#include <algorithm>
 #include "synth/synth_globals.h"
 #include "synth/audio_engine.h"
 #include "synth/presets.h"
@@ -44,6 +45,38 @@ struct ParamEntry {
     std::function<void(std::ofstream&)>     save;
     std::function<void(const std::string&)> load;
 };
+
+namespace {
+constexpr int kLfoShapeMin = LFO_SINE;
+constexpr int kLfoShapeMax = LFO_SQUARE;
+constexpr int kLfoSyncMin = 0;
+constexpr int kLfoSyncMax = 1;
+constexpr int kLfoBpmRateMin = 0;
+constexpr int kLfoBpmRateMax = 5;
+constexpr int kModSourceMin = SRC_NONE;
+constexpr int kModSourceMax = SRC_ENV3;
+constexpr int kModTargetMin = TGT_NONE;
+constexpr int kModTargetMax = TGT_REV_MIX;
+
+int ClampInt(int value, int minValue, int maxValue) {
+    return std::max(minValue, std::min(maxValue, value));
+}
+
+void SanitizeLoadedState() {
+    int maxTableIndex = std::max(0, (int)g_synth.wavetables.tables.size() - 1);
+    g_synth.oscA.tableIndex = ClampInt(g_synth.oscA.tableIndex, 0, maxTableIndex);
+    g_synth.oscB.tableIndex = ClampInt(g_synth.oscB.tableIndex, 0, maxTableIndex);
+
+    g_synth.oscA.unisonVoices = ClampInt(g_synth.oscA.unisonVoices, 1, MAX_VOICES);
+    g_synth.oscB.unisonVoices = ClampInt(g_synth.oscB.unisonVoices, 1, MAX_VOICES);
+
+    for (int i = 0; i < 2; ++i) {
+        g_synth.lfos[i].shape = ClampInt(g_synth.lfos[i].shape, kLfoShapeMin, kLfoShapeMax);
+        g_synth.lfoConfig[i].syncMode = ClampInt(g_synth.lfoConfig[i].syncMode, kLfoSyncMin, kLfoSyncMax);
+        g_synth.lfoConfig[i].bpmRateIndex = ClampInt(g_synth.lfoConfig[i].bpmRateIndex, kLfoBpmRateMin, kLfoBpmRateMax);
+    }
+}
+} // namespace
 
 static std::vector<ParamEntry> buildParamTable() {
     std::vector<ParamEntry> t;
@@ -181,6 +214,8 @@ void LoadPreset(const std::string& filename) {
                 int   src = std::stoi(val.substr(0, c1));
                 int   tgt = std::stoi(val.substr(c1 + 1, c2 - c1 - 1));
                 float amt = std::stof(val.substr(c2 + 1));
+                if (src < kModSourceMin || src > kModSourceMax) continue;
+                if (tgt < kModTargetMin || tgt > kModTargetMax) continue;
                 g_synth.modMatrix.push_back({ src, tgt, amt });
                 continue;
             }
@@ -193,6 +228,7 @@ void LoadPreset(const std::string& filename) {
         std::cerr << "Preset load error: " << e.what() << "\n";
     }
 
+    SanitizeLoadedState();
     UpdateOscillatorsTable();
     UpdateEnvelopes();
     UpdateFilters();
