@@ -91,22 +91,34 @@ private:
     void AudioThreadLoop() {
         CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
-        UINT32 bufferFrameCount;
-        pAudioClient->GetBufferSize(&bufferFrameCount);
+        UINT32 bufferFrameCount = 0;
+        HRESULT hr = pAudioClient->GetBufferSize(&bufferFrameCount);
+        if (FAILED(hr) || bufferFrameCount == 0) {
+            CoUninitialize();
+            return;
+        }
 
         // Sleep half a buffer period to avoid busy-waiting the CPU
         int sleepTimeMs = std::max(1, (int)((bufferFrameCount * 1000.0) / 44100.0) / 2);
 
-        pAudioClient->Start();
+        hr = pAudioClient->Start();
+        if (FAILED(hr)) {
+            CoUninitialize();
+            return;
+        }
 
         while (isRunning) {
             UINT32 numPadding;
-            pAudioClient->GetCurrentPadding(&numPadding);
+            hr = pAudioClient->GetCurrentPadding(&numPadding);
+            if (FAILED(hr)) {
+                Sleep(sleepTimeMs);
+                continue;
+            }
             UINT32 numAvailable = bufferFrameCount - numPadding;
 
             if (numAvailable > 0) {
                 float* pData;
-                HRESULT hr = pRenderClient->GetBuffer(numAvailable, (BYTE**)&pData);
+                hr = pRenderClient->GetBuffer(numAvailable, (BYTE**)&pData);
                 if (SUCCEEDED(hr)) {
                     if (audioCallback) audioCallback(pData, numAvailable);
                     pRenderClient->ReleaseBuffer(numAvailable, 0);
