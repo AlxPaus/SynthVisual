@@ -149,11 +149,13 @@ void RenderOscTab() {
         float pxD = (ep.decay   / tt) * gSize.x * 2.0f;
         float pxS = 40.0f;
         float pxR = (ep.release / tt) * gSize.x * 2.0f;
+        auto clampX = [&](float x) { return std::max(gPos.x, std::min(gPos.x + gSize.x, x)); };
+        auto clampY = [&](float y) { return std::max(gPos.y, std::min(gPos.y + gSize.y, y)); };
         ImVec2 p0(gPos.x,           gPos.y + gSize.y);
-        ImVec2 p1(p0.x + pxA,       gPos.y);
-        ImVec2 p2(p1.x + pxD,       gPos.y + gSize.y - ep.sustain * gSize.y);
-        ImVec2 p3(p2.x + pxS,       p2.y);
-        ImVec2 p4(p3.x + pxR,       gPos.y + gSize.y);
+        ImVec2 p1(clampX(p0.x + pxA), clampY(gPos.y));
+        ImVec2 p2(clampX(p1.x + pxD), clampY(gPos.y + gSize.y - ep.sustain * gSize.y));
+        ImVec2 p3(clampX(p2.x + pxS), clampY(p2.y));
+        ImVec2 p4(clampX(p3.x + pxR), clampY(gPos.y + gSize.y));
         ImU32 lineClr = IM_COL32(0, 200, 255, 255);
         dl->AddLine(p0, p1, lineClr, 2.0f); dl->AddLine(p1, p2, lineClr, 2.0f);
         dl->AddLine(p2, p3, lineClr, 2.0f); dl->AddLine(p3, p4, lineClr, 2.0f);
@@ -183,7 +185,7 @@ void RenderOscTab() {
             else if (envState == 2) { float range = 1.0f - sus; dotX = p1.x + pxD * ((range > 0.001f) ? (1.0f - lvl) / range : 1.0f); }
             else if (envState == 3) dotX = p2.x + pxS * 0.5f;
             else if (envState == 4) { float t = (sus > 0.001f) ? 1.0f - (lvl / sus) : 1.0f; dotX = p3.x + pxR * std::max(0.0f, std::min(1.0f, t)); }
-            dl->AddCircleFilled(ImVec2(dotX, dotY), 4.5f, IM_COL32(255, 215, 0, 255));
+            dl->AddCircleFilled(ImVec2(clampX(dotX), clampY(dotY)), 4.5f, IM_COL32(255, 215, 0, 255));
         }
 
         ImGui::EndTabItem();

@@ -93,7 +93,7 @@ int main() {
     }
 
     audioDriver.stop();
-    if (hMidiIn) { midiInStop(hMidiIn); midiInClose(hMidiIn); }
+    if (hMidiIn) { midiInStop(hMidiIn); midiInClose(hMidiIn); hMidiIn = nullptr; }
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
