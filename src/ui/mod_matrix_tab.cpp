@@ -1,4 +1,5 @@
 #include <mutex>
+#include <vector>
 #include "imgui.h"
 #include "synth/synth_globals.h"
 #include "ui/mod_matrix_tab.h"
@@ -24,13 +25,23 @@ void RenderModMatrixTab() {
     ImGui::Text("ACTION");    ImGui::NextColumn();
     ImGui::Separator();
 
-    for (int i = 0; i < (int)g_synth.modMatrix.size(); ++i) {
+    std::vector<ModRouting> modSnapshot;
+    {
+        std::lock_guard<std::mutex> lock(audioMutex);
+        modSnapshot = g_synth.modMatrix;
+    }
+
+    for (int i = 0; i < (int)modSnapshot.size(); ++i) {
         ImGui::PushID(i);
-        ImGui::Text("%s", srcNames[g_synth.modMatrix[i].source]);
+        ImGui::Text("%s", srcNames[modSnapshot[i].source]);
         ImGui::NextColumn();
-        ImGui::SliderFloat("##amt", &g_synth.modMatrix[i].amount, -1.0f, 1.0f, "%.2f");
+        float amount = modSnapshot[i].amount;
+        if (ImGui::SliderFloat("##amt", &amount, -1.0f, 1.0f, "%.2f")) {
+            std::lock_guard<std::mutex> lock(audioMutex);
+            if (i < (int)g_synth.modMatrix.size()) g_synth.modMatrix[i].amount = amount;
+        }
         ImGui::NextColumn();
-        ImGui::Text("%s", tgtNames[g_synth.modMatrix[i].target]);
+        ImGui::Text("%s", tgtNames[modSnapshot[i].target]);
         ImGui::NextColumn();
         if (ImGui::Button("REMOVE", ImVec2(80, 0))) {
             std::lock_guard<std::mutex> lock(audioMutex);

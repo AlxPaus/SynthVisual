@@ -52,7 +52,11 @@ inline bool DrawKnob(const char* label, float* value, float vMin, float vMax,
     dl->PathArcTo(center, radius - 2.0f, angleMin, angle, 32);
     dl->PathStroke(IM_COL32(0, 200, 255, 255), false, 4.0f);
 
-    float modAmt = GetModAmountForUI(targetId);
+    float modAmt = 0.0f;
+    if (targetId != TGT_NONE) {
+        std::lock_guard<std::mutex> lock(audioMutex);
+        modAmt = GetModAmountForUI(targetId);
+    }
     if (modAmt != 0.0f) {
         float tMod   = std::max(0.0f, std::min(1.0f, t + modAmt));
         float angMod = angleMin + (angleMax - angleMin) * tMod;
