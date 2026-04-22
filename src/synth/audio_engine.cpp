@@ -114,6 +114,9 @@ void NoteOff(int note) {
         bool anyActive = false;
         for (const auto& v : g_synth.voicesA) if (v.isActive()) { anyActive = true; break; }
         if (!anyActive) {
+            for (const auto& v : g_synth.voicesB) if (v.isActive()) { anyActive = true; break; }
+        }
+        if (!anyActive) {
             g_synth.auxEnvs[0].release();
             g_synth.auxEnvs[1].release();
         }
