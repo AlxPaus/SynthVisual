@@ -47,6 +47,8 @@ public:
     float getPan() const { return pan; }
     void setDetuneSemitones(float d) { detuneSemitones = d; }
     float getDetuneSemitones() const { return detuneSemitones; }
+    void setVelocityGain(float v) { velocityGain = std::max(0.0f, std::min(1.0f, v)); }
+    float getVelocityGain() const { return velocityGain; }
     void setPhase(float p) { phase = normalizePhase(p); }
 
     void setFrequency(float freq) {
@@ -91,5 +93,5 @@ private:
     const Wavetable3D* currentTable;
     float sampleRate, phase, increment, frequency;
     int   currentMidiNote;
-    float pan, wtPosNormalized, detuneSemitones = 0.0f;
+    float pan, wtPosNormalized, detuneSemitones = 0.0f, velocityGain = 1.0f;
 };

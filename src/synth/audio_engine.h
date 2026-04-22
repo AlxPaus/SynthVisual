@@ -9,7 +9,7 @@ void UpdateOscillatorsTable();
 void UpdateEnvelopes();
 void UpdateFilters();
 
-void NoteOn(int note);
+void NoteOn(int note, int velocity = 127);
 void NoteOff(int note);
 
 float GetModSum(int targetId);

@@ -38,6 +38,7 @@ static void TriggerVoicePool(
     std::vector<WavetableOscillator>& pool,
     const OscConfig& cfg,
     int baseNote,
+    int velocity,
     bool legatoSlide = false)
 {
     int assigned = 0;
@@ -52,6 +53,7 @@ static void TriggerVoicePool(
 
             v.setFrequency(freq);
             v.setDetuneSemitones(detuneSemitones);
+            v.setVelocityGain((float)velocity / 127.0f);
             v.setPan(spread * cfg.unisonBlend);
 
             if (!legatoSlide) {
@@ -66,8 +68,9 @@ static void TriggerVoicePool(
     }
 }
 
-void NoteOn(int note) {
+void NoteOn(int note, int velocity) {
     std::lock_guard<std::mutex> lock(audioMutex);
+    velocity = std::max(1, std::min(127, velocity));
     if (note < 0 || note > 127 || g_synth.noteActive[note]) return;
     g_synth.noteActive[note] = true;
 
@@ -81,14 +84,14 @@ void NoteOn(int note) {
             g_synth.auxEnvs[0].trigger();
             g_synth.auxEnvs[1].trigger();
         }
-        if (g_synth.oscA.enabled) TriggerVoicePool(g_synth.voicesA, g_synth.oscA, note, !firstNote);
-        if (g_synth.oscB.enabled) TriggerVoicePool(g_synth.voicesB, g_synth.oscB, note, !firstNote);
+        if (g_synth.oscA.enabled) TriggerVoicePool(g_synth.voicesA, g_synth.oscA, note, velocity, !firstNote);
+        if (g_synth.oscB.enabled) TriggerVoicePool(g_synth.voicesB, g_synth.oscB, note, velocity, !firstNote);
     } else {
         g_synth.lastPolyFreq = 440.0f * std::pow(2.0f, (note - 69.0f) / 12.0f);
         g_synth.auxEnvs[0].trigger();
         g_synth.auxEnvs[1].trigger();
-        if (g_synth.oscA.enabled) TriggerVoicePool(g_synth.voicesA, g_synth.oscA, note);
-        if (g_synth.oscB.enabled) TriggerVoicePool(g_synth.voicesB, g_synth.oscB, note);
+        if (g_synth.oscA.enabled) TriggerVoicePool(g_synth.voicesA, g_synth.oscA, note, velocity);
+        if (g_synth.oscB.enabled) TriggerVoicePool(g_synth.voicesB, g_synth.oscB, note, velocity);
     }
 }
 
@@ -135,7 +138,7 @@ void CALLBACK MidiInProc(HMIDIIN, UINT wMsg, DWORD_PTR, DWORD_PTR dwParam1, DWOR
     unsigned char velocity = (dwParam1 >> 16) & 0xFF;
     unsigned char type     = status & 0xF0;
     if (type == 0x90 && velocity > 0)
-        NoteOn(note);
+        NoteOn(note, velocity);
     else if (type == 0x80 || (type == 0x90 && velocity == 0))
         NoteOff(note);
 }
@@ -325,7 +328,7 @@ void data_callback(float* pOut, int frameCount) {
             for (auto& v : voices) {
                 if (!v.isActive()) continue;
                 float p = v.getPan();
-                float s = v.getSample() * activeLevel;
+                float s = v.getSample() * activeLevel * v.getVelocityGain();
                 // 0.15f = headroom scale that keeps the stereo sum from clipping with full unison
                 mixL   += s * (1.0f - p) * 0.5f * gc * 0.15f;
                 mixR   += s * (1.0f + p) * 0.5f * gc * 0.15f;
