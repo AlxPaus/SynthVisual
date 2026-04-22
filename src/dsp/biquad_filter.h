@@ -16,9 +16,9 @@ public:
     void reset() { x1 = x2 = y1 = y2 = 0.0f; }
 
     void setCoefficients(FilterType type, float cutoffHz, float q, float sampleRate) {
-        if (!enabled) return;
-        float cutoff = std::min(cutoffHz, sampleRate * 0.49f);
-        float w0    = 2.0f * PI * cutoff / sampleRate;
+        float safeSampleRate = std::max(1.0f, sampleRate);
+        float cutoff = std::clamp(cutoffHz, 1.0f, safeSampleRate * 0.49f);
+        float w0    = 2.0f * PI * cutoff / safeSampleRate;
         float cosW0 = std::cos(w0);
         float alpha = std::sin(w0) / (2.0f * std::max(0.1f, q));
         float a0inv = 1.0f;
@@ -76,7 +76,10 @@ public:
         float output = b0 * input + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
         x2 = x1; x1 = input;
         y2 = y1; y1 = output;
+        if (std::abs(x1) < 1.0e-20f) x1 = 0.0f;
+        if (std::abs(x2) < 1.0e-20f) x2 = 0.0f;
         if (std::abs(y1) < 1.0e-20f) y1 = 0.0f;  // flush denormals
+        if (std::abs(y2) < 1.0e-20f) y2 = 0.0f;
         return output;
     }
 };

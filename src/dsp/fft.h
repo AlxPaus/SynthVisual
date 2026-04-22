@@ -7,6 +7,8 @@
 // Iterative Cooley-Tukey FFT (in-place, complex input, power-of-2 size)
 inline void computeFFT(std::vector<std::complex<float>>& data) {
     int n = (int)data.size();
+    if (n <= 1) return;
+    if ((n & (n - 1)) != 0) return;
 
     // Bit-reversal permutation
     for (int i = 1, j = 0; i < n; ++i) {

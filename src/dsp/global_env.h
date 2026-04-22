@@ -1,4 +1,6 @@
 #pragma once
+#include <algorithm>
+#include <cmath>
 
 struct GlobalEnv {
     int   state = 0;
@@ -8,6 +10,11 @@ struct GlobalEnv {
     void release() { if (state != 0) state = 4; }
 
     void process(float a, float d, float s, float r, float sr) {
+        a = std::max(0.0f, std::isfinite(a) ? a : 0.0f);
+        d = std::max(0.0f, std::isfinite(d) ? d : 0.0f);
+        s = std::clamp(std::isfinite(s) ? s : 0.0f, 0.0f, 1.0f);
+        r = std::max(0.0f, std::isfinite(r) ? r : 0.0f);
+        sr = std::max(1.0f, std::isfinite(sr) ? sr : 1.0f);
         if (state == 0) {
             val = 0.0f;
         } else if (state == 1) {

@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <algorithm>
 #include "constants.h"
 
 enum LfoShape { LFO_SINE, LFO_TRIANGLE, LFO_SAW, LFO_SQUARE };
@@ -13,7 +14,10 @@ public:
     int   shape        = LFO_TRIANGLE;
 
     void advance(int frames) {
-        phase += (rateHz / sampleRate) * frames;
+        float safeSampleRate = std::max(1.0f, sampleRate);
+        float safeRate = std::isfinite(rateHz) ? rateHz : 0.0f;
+        phase += (safeRate / safeSampleRate) * frames;
+        while (phase < 0.0f) phase += 1.0f;
         while (phase >= 1.0f) phase -= 1.0f;
         switch (shape) {
             case LFO_SINE:

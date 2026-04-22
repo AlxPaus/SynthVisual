@@ -11,6 +11,7 @@ struct CombFilter {
     void init(int size) { buf.assign(size, 0.0f); }
 
     float process(float in) {
+        if (buf.empty()) return in;
         float out = buf[wp];
         fs      = out * (1.0f - damping) + fs * damping;
         buf[wp] = in + fs * fb;
@@ -27,6 +28,7 @@ struct AllPassFilter {
     void init(int size) { buf.assign(size, 0.0f); }
 
     float process(float in) {
+        if (buf.empty()) return in;
         float bufOut = buf[wp];
         float out    = -in + bufOut;
         buf[wp] = in + bufOut * fb;

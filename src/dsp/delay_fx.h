@@ -19,7 +19,9 @@ struct DelayFX {
 
     void process(float& inL, float& inR, float sr) {
         if (!enabled) return;
-        int delaySamples = std::max(1, (int)(time * sr));
+        int maxDelaySamples = std::max(1, (int)bufL.size() - 1);
+        int delaySamples = std::max(1, (int)(time * std::max(1.0f, sr)));
+        delaySamples = std::min(delaySamples, maxDelaySamples);
         int readPos = writePos - delaySamples;
         if (readPos < 0) readPos += (int)bufL.size();
 

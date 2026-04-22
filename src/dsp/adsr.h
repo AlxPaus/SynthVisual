@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <cmath>
 
 enum EnvState { ENV_IDLE, ENV_ATTACK, ENV_DECAY, ENV_SUSTAIN, ENV_RELEASE };
 
@@ -16,10 +17,10 @@ public:
     }
 
     void setParameters(float a, float d, float s, float r) {
-        attackTime   = std::max(0.001f, a);
-        decayTime    = std::max(0.001f, d);
-        sustainLevel = s;
-        releaseTime  = std::max(0.001f, r);
+        attackTime   = std::max(0.001f, std::isfinite(a) ? a : 0.05f);
+        decayTime    = std::max(0.001f, std::isfinite(d) ? d : 0.5f);
+        sustainLevel = std::clamp(std::isfinite(s) ? s : 0.7f, 0.0f, 1.0f);
+        releaseTime  = std::max(0.001f, std::isfinite(r) ? r : 0.3f);
     }
 
     void noteOn()  { state = ENV_ATTACK; }
