@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdlib>
+#include <random>
 
 struct NoiseGenerator {
     bool  enabled = false;
@@ -8,7 +8,7 @@ struct NoiseGenerator {
 
     float process() {
         if (!enabled) return 0.0f;
-        float white = ((float)rand() / (float)RAND_MAX) * 2.0f - 1.0f;
+        float white = whiteDist(rng);
         if (type == 0) {
             return white * level;
         } else if (type == 1) {
@@ -31,4 +31,6 @@ struct NoiseGenerator {
 private:
     float b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
     float brownState = 0;
+    std::minstd_rand rng{ 0x4F534349u };
+    std::uniform_real_distribution<float> whiteDist{ -1.0f, 1.0f };
 };

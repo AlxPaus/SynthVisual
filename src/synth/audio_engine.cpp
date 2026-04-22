@@ -3,6 +3,7 @@
 #include <mmsystem.h>
 #include <cmath>
 #include <algorithm>
+#include <random>
 #include "synth/synth_globals.h"
 #include "synth/audio_engine.h"
 
@@ -14,6 +15,12 @@ static float GetUnisonSpread(int index, int totalVoices) {
     if (totalVoices <= 1) return 0.0f;
     float t = (float)index / (float)(totalVoices - 1);
     return 2.0f * t - 1.0f;
+}
+
+static float RandomUnitValue() {
+    thread_local std::minstd_rand rng{ std::random_device{}() };
+    thread_local std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+    return dist(rng);
 }
 
 void UpdateOscillatorsTable() {
@@ -58,7 +65,7 @@ static void TriggerVoicePool(
 
             if (!legatoSlide) {
                 float base   = (g_synth.startPhase / 360.0f) * TABLE_SIZE;
-                float offset = ((float)rand() / (float)RAND_MAX)
+                float offset = RandomUnitValue()
                              * (g_synth.startPhaseRand / 100.0f) * TABLE_SIZE;
                 v.setPhase(std::fmod(base + offset, (float)TABLE_SIZE));
             }
