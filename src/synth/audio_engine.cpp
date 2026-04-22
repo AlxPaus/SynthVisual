@@ -10,6 +10,12 @@ HMIDIIN              hMidiIn         = nullptr;
 std::vector<std::string> midiPorts   = {};
 int                  selectedMidiPort = -1;
 
+static float GetUnisonSpread(int index, int totalVoices) {
+    if (totalVoices <= 1) return 0.0f;
+    float t = (float)index / (float)(totalVoices - 1);
+    return 2.0f * t - 1.0f;
+}
+
 void UpdateOscillatorsTable() {
     for (auto& v : g_synth.voicesA)
         v.setWavetable(&g_synth.wavetables.tables[g_synth.oscA.tableIndex]);
@@ -34,14 +40,12 @@ static void TriggerVoicePool(
     int baseNote,
     bool legatoSlide = false)
 {
-    int remaining = cfg.unisonVoices;
+    int assigned = 0;
     for (auto& v : pool) {
         if (!v.isActive() || legatoSlide) {
             if (!legatoSlide) v.noteOn(baseNote);
 
-            float spread = (cfg.unisonVoices > 1)
-                ? 2.0f * (float)(cfg.unisonVoices - remaining) / (float)(cfg.unisonVoices - 1) - 1.0f
-                : 0.0f;
+            float spread = GetUnisonSpread(assigned, cfg.unisonVoices);
             float detuneSemitones = spread * (cfg.unisonDetune * 0.5f);
             float freq = 440.0f * std::pow(2.0f,
                 (baseNote + cfg.octave * 12 + cfg.semi - 69.0f + detuneSemitones) / 12.0f);
@@ -56,7 +60,8 @@ static void TriggerVoicePool(
                              * (g_synth.startPhaseRand / 100.0f) * TABLE_SIZE;
                 v.setPhase(std::fmod(base + offset, (float)TABLE_SIZE));
             }
-            if (--remaining <= 0) break;
+            ++assigned;
+            if (assigned >= cfg.unisonVoices) break;
         }
     }
 }
@@ -283,9 +288,7 @@ void data_callback(float* pOut, int frameCount) {
                 if (!cfg.enabled) return;
                 for (int u = 0; u < cfg.unisonVoices; ++u) {
                     if (!voices[u].isActive()) continue;
-                    float spread = (cfg.unisonVoices > 1)
-                        ? 2.0f * (float)(cfg.unisonVoices - 1 - u) / (float)(cfg.unisonVoices - 1) - 1.0f
-                        : 0.0f;
+                    float spread = GetUnisonSpread(u, cfg.unisonVoices);
                     // pitchMod maps ±1.0 → ±24 semitones
                     float mult = std::pow(2.0f,
                         (cfg.octave * 12 + cfg.semi + pitchMod * 24.0f + spread * activeDet * 0.5f) / 12.0f);
