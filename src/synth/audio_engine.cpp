@@ -245,8 +245,10 @@ void data_callback(float* pOut, int frameCount) {
     }
 
     // Equal-loudness gain compensation for unison voice count
-    float gcA        = 1.0f / std::sqrt((float)g_synth.oscA.unisonVoices);
-    float gcB        = 1.0f / std::sqrt((float)g_synth.oscB.unisonVoices);
+    int safeUnisonA = std::max(1, std::min(MAX_VOICES, g_synth.oscA.unisonVoices));
+    int safeUnisonB = std::max(1, std::min(MAX_VOICES, g_synth.oscB.unisonVoices));
+    float gcA        = 1.0f / std::sqrt((float)safeUnisonA);
+    float gcB        = 1.0f / std::sqrt((float)safeUnisonB);
     float masterGain = std::pow(10.0f, g_synth.masterVolumeDb / 20.0f);
 
     // Glide: 1-pole IIR, time constant ≈ glideTime/3 seconds
