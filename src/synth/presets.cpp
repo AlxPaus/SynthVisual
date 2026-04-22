@@ -175,6 +175,7 @@ static std::vector<ParamEntry> buildParamTable() {
 void SavePreset(const std::string& filename) {
     std::ofstream out(filename);
     if (!out) return;
+    std::lock_guard<std::mutex> lock(audioMutex);
 
     out << "modMatrixSize=" << g_synth.modMatrix.size() << "\n";
     for (size_t i = 0; i < g_synth.modMatrix.size(); ++i) {
