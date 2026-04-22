@@ -25,9 +25,16 @@ void RenderDrawTab() {
     ImGui::SameLine(0, 50);
     if (ImGui::Button("APPLY TO OSC A (Current Frame)", ImVec2(250, 30))) {
         std::lock_guard<std::mutex> lock(audioMutex);
-        int frameIdx = (int)(g_synth.oscA.wtPos
-            * (g_synth.wavetables.tables[g_synth.oscA.tableIndex].frames.size() - 1));
-        g_synth.wavetables.tables[g_synth.oscA.tableIndex].frames[frameIdx] = customWave;
+        auto& tables = g_synth.wavetables.tables;
+        if (tables.empty()) return;
+
+        int tableIdx = std::max(0, std::min((int)tables.size() - 1, g_synth.oscA.tableIndex));
+        auto& frames = tables[tableIdx].frames;
+        if (frames.empty()) return;
+
+        int frameIdx = (int)(g_synth.oscA.wtPos * (frames.size() - 1));
+        frameIdx = std::max(0, std::min((int)frames.size() - 1, frameIdx));
+        frames[frameIdx] = customWave;
         UpdateOscillatorsTable();
     }
     ImGui::EndGroup();
