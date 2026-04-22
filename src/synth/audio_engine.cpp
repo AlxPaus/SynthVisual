@@ -168,6 +168,8 @@ float GetModSum(int targetId) {
             case SRC_ENV1: {
                 for (const auto& v : g_synth.voicesA)
                     if (v.isActive()) src = std::max(src, v.env.currentLevel);
+                for (const auto& v : g_synth.voicesB)
+                    if (v.isActive()) src = std::max(src, v.env.currentLevel);
                 break;
             }
             case SRC_ENV2: src = g_synth.auxEnvs[0].val; break;
