@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <mutex>
 #include <vector>
 #include "imgui.h"
@@ -33,7 +34,9 @@ void RenderModMatrixTab() {
 
     for (int i = 0; i < (int)modSnapshot.size(); ++i) {
         ImGui::PushID(i);
-        ImGui::Text("%s", srcNames[modSnapshot[i].source]);
+        int srcIdx = std::max(0, std::min((int)(sizeof(srcNames) / sizeof(srcNames[0])) - 1, modSnapshot[i].source));
+        int tgtIdx = std::max(0, std::min((int)(sizeof(tgtNames) / sizeof(tgtNames[0])) - 1, modSnapshot[i].target));
+        ImGui::Text("%s", srcNames[srcIdx]);
         ImGui::NextColumn();
         float amount = modSnapshot[i].amount;
         if (ImGui::SliderFloat("##amt", &amount, -1.0f, 1.0f, "%.2f")) {
@@ -41,11 +44,11 @@ void RenderModMatrixTab() {
             if (i < (int)g_synth.modMatrix.size()) g_synth.modMatrix[i].amount = amount;
         }
         ImGui::NextColumn();
-        ImGui::Text("%s", tgtNames[modSnapshot[i].target]);
+        ImGui::Text("%s", tgtNames[tgtIdx]);
         ImGui::NextColumn();
         if (ImGui::Button("REMOVE", ImVec2(80, 0))) {
             std::lock_guard<std::mutex> lock(audioMutex);
-            g_synth.modMatrix.erase(g_synth.modMatrix.begin() + i);
+            if (i < (int)g_synth.modMatrix.size()) g_synth.modMatrix.erase(g_synth.modMatrix.begin() + i);
             --i;
         }
         ImGui::NextColumn();

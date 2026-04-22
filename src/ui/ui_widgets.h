@@ -27,13 +27,17 @@ inline bool DrawKnob(const char* label, float* value, float vMin, float vMax,
 
     if (targetId != TGT_NONE && ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MOD_SRC")) {
-            int src = *(const int*)payload->Data;
-            std::lock_guard<std::mutex> lock(audioMutex);
-            bool found = false;
-            for (auto& m : g_synth.modMatrix) {
-                if (m.source == src && m.target == targetId) { m.amount = 0.5f; found = true; break; }
+            if (payload->Data != nullptr && payload->DataSize == sizeof(int)) {
+                int src = *(const int*)payload->Data;
+                if (src >= SRC_NONE && src <= SRC_ENV3) {
+                    std::lock_guard<std::mutex> lock(audioMutex);
+                    bool found = false;
+                    for (auto& m : g_synth.modMatrix) {
+                        if (m.source == src && m.target == targetId) { m.amount = 0.5f; found = true; break; }
+                    }
+                    if (!found) g_synth.modMatrix.push_back({ src, targetId, 0.5f });
+                }
             }
-            if (!found) g_synth.modMatrix.push_back({ src, targetId, 0.5f });
         }
         ImGui::EndDragDropTarget();
     }
@@ -118,6 +122,7 @@ inline void Draw3DTable(ImDrawList* drawList, ImVec2 pos, float viewW, float vie
                         const Wavetable3D& table, float currentWtPos, float currentLevel,
                         const std::vector<float>& activeWave, bool enabled)
 {
+    if (viewW <= 1.0f || viewH <= 1.0f) return;
     drawList->AddRectFilled(pos, ImVec2(pos.x + viewW, pos.y + viewH), IM_COL32(20, 20, 25, 255));
 
     if (!enabled) {
@@ -126,6 +131,7 @@ inline void Draw3DTable(ImDrawList* drawList, ImVec2 pos, float viewW, float vie
     }
 
     int   numFrames   = (int)table.frames.size();
+    if (numFrames <= 0) return;
     float plotW       = viewW * 0.75f;
     float plotH       = 40.0f;
     float startX      = pos.x + (viewW - plotW) / 2.0f;

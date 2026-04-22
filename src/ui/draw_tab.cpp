@@ -43,6 +43,11 @@ void RenderDrawTab() {
     ImVec2 canvasPos  = ImGui::GetCursorScreenPos();
     ImVec2 canvasSize = ImGui::GetContentRegionAvail();
     canvasSize.y -= 10.0f;
+    bool validCanvas = (canvasSize.x > 1.0f && canvasSize.y > 1.0f);
+    if (!validCanvas) {
+        canvasSize.x = std::max(1.0f, canvasSize.x);
+        canvasSize.y = std::max(1.0f, canvasSize.y);
+    }
     ImGui::InvisibleButton("##canvas", canvasSize);
     ImDrawList* dl = ImGui::GetWindowDrawList();
 
@@ -51,7 +56,7 @@ void RenderDrawTab() {
     float midY = canvasPos.y + canvasSize.y * 0.5f;
     dl->AddLine(ImVec2(canvasPos.x, midY), ImVec2(canvasPos.x + canvasSize.x, midY), IM_COL32(80, 80, 80, 255));
 
-    if (ImGui::IsItemActive() && ImGui::IsMouseDown(0)) {
+    if (validCanvas && ImGui::IsItemActive() && ImGui::IsMouseDown(0)) {
         ImVec2 mp = ImGui::GetMousePos();
         float x   = mp.x - canvasPos.x;
         float y   = mp.y - canvasPos.y;
@@ -74,11 +79,13 @@ void RenderDrawTab() {
         lastMouseX = -1.0f; lastMouseY = -1.0f;
     }
 
-    for (int i = 0; i < TABLE_SIZE - 1; ++i) {
-        float x1 = canvasPos.x + ((float)i       / (TABLE_SIZE - 1)) * canvasSize.x;
-        float x2 = canvasPos.x + ((float)(i + 1) / (TABLE_SIZE - 1)) * canvasSize.x;
-        float y1 = midY - customWave[i]     * (canvasSize.y * 0.5f);
-        float y2 = midY - customWave[i + 1] * (canvasSize.y * 0.5f);
-        dl->AddLine(ImVec2(x1, y1), ImVec2(x2, y2), IM_COL32(255, 150, 0, 255), 2.0f);
+    if (validCanvas) {
+        for (int i = 0; i < TABLE_SIZE - 1; ++i) {
+            float x1 = canvasPos.x + ((float)i       / (TABLE_SIZE - 1)) * canvasSize.x;
+            float x2 = canvasPos.x + ((float)(i + 1) / (TABLE_SIZE - 1)) * canvasSize.x;
+            float y1 = midY - customWave[i]     * (canvasSize.y * 0.5f);
+            float y2 = midY - customWave[i + 1] * (canvasSize.y * 0.5f);
+            dl->AddLine(ImVec2(x1, y1), ImVec2(x2, y2), IM_COL32(255, 150, 0, 255), 2.0f);
+        }
     }
 }

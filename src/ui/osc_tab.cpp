@@ -217,7 +217,7 @@ void RenderOscTab() {
     ImGui::InvisibleButton("##FiltGraph", fSize);
     ImDrawList* fd = ImGui::GetWindowDrawList();
     fd->AddRectFilled(fPos, ImVec2(fPos.x + fSize.x, fPos.y + fSize.y), IM_COL32(30, 30, 35, 255));
-    if (g_synth.filter.enabled) {
+    if (g_synth.filter.enabled && fSize.x > 1.0f) {
         std::vector<ImVec2> pts;
         for (int i = 0; i < (int)fSize.x; ++i) {
             float freq  = 20.0f * std::pow(1000.0f, (float)i / (fSize.x - 1.0f));
@@ -294,16 +294,19 @@ void RenderOscTab() {
     ImVec2 specPos = ImGui::GetCursorScreenPos();
     float  specW   = ImGui::GetContentRegionAvail().x - 10.0f;
     float  specH   = 80.0f;
-    ImGui::InvisibleButton("##Spectrum", ImVec2(specW, specH));
+    float safeSpecW = std::max(1.0f, specW);
+    ImGui::InvisibleButton("##Spectrum", ImVec2(safeSpecW, specH));
     ImDrawList* sd = ImGui::GetWindowDrawList();
-    sd->AddRectFilled(specPos, ImVec2(specPos.x + specW, specPos.y + specH), IM_COL32(20, 20, 25, 255));
-    for (int x = 0; x < (int)specW - 1; x += 3) {
-        float freq = 20.0f * std::pow(1000.0f, (float)x / specW);
-        int   bin  = std::max(0, std::min((int)(freq * (FFT_SIZE / kSampleRate)), FFT_SIZE / 2 - 1));
-        float val  = g_synth.spectrumSmooth[bin];
-        sd->AddLine(ImVec2(specPos.x + x, specPos.y + specH),
-                    ImVec2(specPos.x + x, specPos.y + specH - val * specH),
-                    IM_COL32(255, 100, 200, 200), 2.0f);
+    sd->AddRectFilled(specPos, ImVec2(specPos.x + safeSpecW, specPos.y + specH), IM_COL32(20, 20, 25, 255));
+    if (specW > 1.0f) {
+        for (int x = 0; x < (int)specW - 1; x += 3) {
+            float freq = 20.0f * std::pow(1000.0f, (float)x / safeSpecW);
+            int   bin  = std::max(0, std::min((int)(freq * (FFT_SIZE / kSampleRate)), FFT_SIZE / 2 - 1));
+            float val  = g_synth.spectrumSmooth[bin];
+            sd->AddLine(ImVec2(specPos.x + x, specPos.y + specH),
+                        ImVec2(specPos.x + x, specPos.y + specH - val * specH),
+                        IM_COL32(255, 100, 200, 200), 2.0f);
+        }
     }
     ImGui::EndGroup();
     ImGui::Separator();
