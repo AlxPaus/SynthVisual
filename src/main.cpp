@@ -67,17 +67,20 @@ int main() {
         RenderTopBar(currentPreset);
         ImGui::Separator();
 
+        bool showScope = true;
         if (ImGui::BeginTabBar("SerumTabs")) {
-            if (ImGui::BeginTabItem("OSC"))        { RenderOscTab();       ImGui::EndTabItem(); }
+            if (ImGui::BeginTabItem("OSC"))        { showScope = false; RenderOscTab();       ImGui::EndTabItem(); }
             if (ImGui::BeginTabItem("DRAW"))       { RenderDrawTab();      ImGui::EndTabItem(); }
-            if (ImGui::BeginTabItem("FX"))         { RenderFxTab();        ImGui::EndTabItem(); }
+            if (ImGui::BeginTabItem("FX"))         { showScope = false; RenderFxTab();        ImGui::EndTabItem(); }
             if (ImGui::BeginTabItem("MOD MATRIX")) { RenderModMatrixTab(); ImGui::EndTabItem(); }
             if (ImGui::BeginTabItem("WAVE"))       { RenderWaveTab();      ImGui::EndTabItem(); }
             ImGui::EndTabBar();
         }
 
-        ImGui::Separator();
-        RenderScopeSection();
+        if (showScope) {
+            ImGui::Separator();
+            RenderScopeSection();
+        }
         ImGui::Separator();
         RenderPianoSection(mouseHeldNote);
 
