@@ -72,6 +72,7 @@ int main() {
             if (ImGui::BeginTabItem("DRAW"))       { RenderDrawTab();      ImGui::EndTabItem(); }
             if (ImGui::BeginTabItem("FX"))         { RenderFxTab();        ImGui::EndTabItem(); }
             if (ImGui::BeginTabItem("MOD MATRIX")) { RenderModMatrixTab(); ImGui::EndTabItem(); }
+            if (ImGui::BeginTabItem("WAVE"))       { RenderWaveTab();      ImGui::EndTabItem(); }
             ImGui::EndTabBar();
         }
 

@@ -7,6 +7,7 @@ add_library(ui STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/scope.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/piano.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/spectrum.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/wave_tab.cpp
 )
 target_include_directories(ui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(ui PUBLIC synth imgui_lib)

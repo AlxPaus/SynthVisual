@@ -401,6 +401,16 @@ void data_callback(float* pOut, int frameCount) {
         pOut[2 * i]     = mixL * masterGain;
         pOut[2 * i + 1] = mixR * masterGain;
 
+        if (g_synth.isRecording.load(std::memory_order_relaxed) &&
+            !g_synth.isRecordingPaused.load(std::memory_order_relaxed)) {
+            if (g_synth.recordBuffer.size() + 2 <= g_synth.recordBuffer.capacity()) {
+                g_synth.recordBuffer.push_back(pOut[2 * i]);
+                g_synth.recordBuffer.push_back(pOut[2 * i + 1]);
+            } else {
+                g_synth.isRecording.store(false, std::memory_order_relaxed);
+            }
+        }
+
         // Scope: triggered on zero-crossing
         float mono = (pOut[2*i] + pOut[2*i+1]) * 0.5f;
         if (!g_synth.scopeTriggered && g_synth.lastScopeSample <= 0.0f && mono > 0.0f) {

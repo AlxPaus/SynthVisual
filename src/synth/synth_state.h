@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <atomic>
 #include "dsp/dsp.h"
 #include "synth/synth_types.h"
 
@@ -62,11 +63,16 @@ struct SynthState {
 
     std::vector<float> spectrumSmooth;
 
+    std::atomic<bool>  isRecording{false};
+    std::atomic<bool>  isRecordingPaused{false};
+    std::vector<float> recordBuffer; // interleaved L,R
+
     SynthState() {
         oscA.enabled = true;
         scopeBuffer.assign(SCOPE_SIZE, 0.0f);
         fftRingBuffer.assign(FFT_SIZE, 0.0f);
         spectrumSmooth.assign(FFT_SIZE / 2, 0.0f);
         std::fill(std::begin(pcKeyNote), std::end(pcKeyNote), -1);
+        recordBuffer.reserve((size_t)kSampleRate * 2 * 60); // 60s pre-alloc
     }
 };

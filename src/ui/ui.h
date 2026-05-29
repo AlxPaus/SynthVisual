@@ -8,3 +8,4 @@
 #include "ui/scope.h"
 #include "ui/piano.h"
 #include "ui/spectrum.h"
+#include "ui/wave_tab.h"

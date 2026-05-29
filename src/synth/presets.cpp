@@ -25,6 +25,19 @@ std::string SaveFileDialog() {
     return GetSaveFileNameA(&ofn) ? std::string(filename) : "";
 }
 
+std::string SaveWavDialog() {
+    char filename[MAX_PATH] = "";
+    OPENFILENAMEA ofn       = {};
+    ofn.lStructSize  = sizeof(ofn);
+    ofn.lpstrFilter  = "WAV Audio (*.wav)\0*.wav\0All Files (*.*)\0*.*\0";
+    ofn.lpstrFile    = filename;
+    ofn.nMaxFile     = MAX_PATH;
+    ofn.lpstrTitle   = "Export WAV";
+    ofn.lpstrDefExt  = "wav";
+    ofn.Flags        = OFN_DONTADDTORECENT | OFN_OVERWRITEPROMPT;
+    return GetSaveFileNameA(&ofn) ? std::string(filename) : "";
+}
+
 std::string OpenFileDialog() {
     char filename[MAX_PATH] = "";
     OPENFILENAMEA ofn       = {};
